@@ -7,8 +7,8 @@
     $('music').classList.add('show');startMusic();
     setTimeout(function(){
       gate.classList.add('done');document.body.style.overflow='';window.scrollTo(0,0);
-      setTimeout(function(){gate.style.display='none'},900);
-    },2600);
+      setTimeout(function(){gate.style.display='none'},1000);
+    },2800);
   });
 
   // Soft original melody made in the browser (C - Am - F - G loop)
