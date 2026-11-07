@@ -854,6 +854,7 @@ footer p + p {
     animation: none !important;
     scroll-behavior: auto !important;
   }
+  
 }
 
 .contact.one {
