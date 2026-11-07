@@ -12,38 +12,30 @@
   });
 
   // Soft original melody made in the browser (C - Am - F - G loop)
-  var ac,master,timer,nextT=0,bar=0,on=false;
-  var chords=[[261.63,329.63,392],[220,261.63,329.63],[174.61,220,261.63],[196,246.94,293.66]];
-  var BAR=4.8;
-  function note(f,t,dur,vol,type){
-    var o=ac.createOscillator(),g=ac.createGain();o.type=type;o.frequency.value=f;
-    g.gain.setValueAtTime(0.0001,t);g.gain.linearRampToValueAtTime(vol,t+.06);g.gain.exponentialRampToValueAtTime(.0001,t+dur);
-    o.connect(g);g.connect(master);o.start(t);o.stop(t+dur+.1);
+    var audio = new Audio('./Assets/song2.mp3');
+  audio.loop = true;
+  audio.volume = 0.6;
+  var on = false;
+ 
+  function setUI() {
+    var b = $('music');
+    b.setAttribute('aria-pressed', on);
+    b.setAttribute('aria-label', on ? 'Turn music off' : 'Turn music on');
   }
-  function playBar(t){
-    var c=chords[bar%4],seq=[0,1,2,1,2,1,0,1];
-    c.forEach(function(f){note(f/2,t,BAR+.6,.07,'sine')});
-    seq.forEach(function(k,i){note(c[k]*2,t+i*.6,1.4,.05,'triangle')});
-    bar++;
+  function startMusic() {
+    audio.play().then(function () { on = true; setUI(); })
+                .catch(function () { on = false; setUI(); });
   }
-  function sched(){while(nextT<ac.currentTime+1.2){playBar(nextT);nextT+=BAR}}
-  function setUI(){var b=$('music');b.setAttribute('aria-pressed',on);b.setAttribute('aria-label',on?'Turn music off':'Turn music on')}
-  function startMusic(){
-    try{
-      if(!ac){var AC=window.AudioContext||window.webkitAudioContext;if(!AC){return}ac=new AC();master=ac.createGain();master.gain.value=0;master.connect(ac.destination)}
-      ac.resume();nextT=ac.currentTime+.1;sched();clearInterval(timer);timer=setInterval(sched,500);
-      master.gain.cancelScheduledValues(ac.currentTime);master.gain.linearRampToValueAtTime(.9,ac.currentTime+1.5);
-      on=true;setUI();
-    }catch(e){on=false;setUI()}
+  function stopMusic() {
+    audio.pause();
+    on = false;
+    setUI();
   }
-  function stopMusic(){
-    try{master.gain.cancelScheduledValues(ac.currentTime);master.gain.linearRampToValueAtTime(0,ac.currentTime+.5);
-    clearInterval(timer);setTimeout(function(){if(!on)ac.suspend()},700)}catch(e){}
-    on=false;setUI();
-  }
-  $('music').addEventListener('click',function(){on?stopMusic():startMusic()});
+ 
+  $('music').addEventListener('click', function () { on ? stopMusic() : startMusic(); });
   setUI();
 
+  // Countdown (12 Nov 2026, 12:00 PM)
   var target=new Date(2026, 10, 12, 12, 0, 0).getTime();
   function pad(n){return String(n).padStart(2,'0')}
   function tick(){
