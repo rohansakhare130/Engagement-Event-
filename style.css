@@ -831,6 +831,11 @@ footer p + p {
   .count {
   gap: 4.5px
 }
+
+.names i {
+    font-size: 0.6em;
+   
+}
 }
 @media (prefers-reduced-motion: reduce) {
   * {
